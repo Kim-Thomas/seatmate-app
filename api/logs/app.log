@@ -1,0 +1,2 @@
+[2016-06-19 11:50:12] my_logger.INFO: Something interesting happened [] []
+[2016-06-19 11:53:02] my_logger.INFO: PDO::__set_state(array( )) [] []
