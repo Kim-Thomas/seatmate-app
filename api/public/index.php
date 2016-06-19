@@ -51,6 +51,22 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+// Check login
+$tokenCheck = function ($request, $response, $next) {
+    $mapper = new UserMapper($this->db);
+    $header = $request->getHeaderLine("HTTP_AUTHORIZATION");
+    $token = split(" ", $header)[1];
+    $user = $mapper->findUserByToken($token);
+    if (!$user) {
+        return $response->withStatus(401)->write("bad access token");
+    }
+    else {
+        $this->user = $user;
+        $response = $next($request, $response);
+        return $response;
+    }
+};
+
 // Add route callbacks
 $app->get('/routes', function ($request, $response, $args) {
     $routes = array("routes"=>[array("/"=>"hello"), array("/hello/{name}"=>"première route")]);
@@ -62,13 +78,21 @@ $app->get('/api', function ($request, $response, $args) {
     return $response->withStatus(200)->write('Bienvenue sur l\'api seatmate 0.0.1');
 });
 
+// Add route callbacks
+$app->get('/api/users/{id}', function (Request $request, Response $response) {
+    $route = $request->getAttribute('route');
+    $mapper = new UserMapper($this->db);
+    $user = $mapper->findUserById($route->getArgument('id'));
+    return $response->withStatus(200)->withJson($user);
+})->add($tokenCheck);
+
 
 // Add route callbacks
 $app->get('/api/users', function (Request $request, Response $response) {
     $mapper = new UserMapper($this->db);
     $users = $mapper->getUsers();
-    return $response->withJson($users);
-});
+    return $response->withStatus(200)->withJson($users);
+})->add($tokenCheck);
 
 $app->post('/api/secure/signin', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
@@ -87,7 +111,7 @@ $app->post('/api/secure/signin', function (Request $request, Response $response)
     $user->setTokenDate(time());
     $mapper->save($user);
     
-    return $response->withJson($token);
+    return $response->withStatus(200)->withJson($token);
 });
 
 $app->post('/api/secure/signup', function (Request $request, Response $response) {
@@ -100,8 +124,7 @@ $app->post('/api/secure/signup', function (Request $request, Response $response)
     $user = new User($user_data);
     $mapper = new UserMapper($this->db);
     $mapper->createUser($user);
-    return $response->withJson($user);
-    //return $response->withRedirect("/api/users");
+    return $response->withStatus(200)->withJson($user);
 });
 
 // Run application

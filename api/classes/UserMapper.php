@@ -24,6 +24,23 @@ class UserMapper extends Mapper {
         return $results;
     }
     
+    public function findUserById($id) {
+        $sql = "SELECT u.id, u.mail, u.password, u.facebook_id, u.pseudo
+            FROM users u WHERE u.id=:id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            "id" => $id
+        ]);
+        $result = null;
+        if($row = $stmt->fetch()) {
+            $result = new User($row);
+        }
+        else {
+            throw new Exception("could not find record");
+        }
+        return $result;
+    }
+    
     public function findUser(User $user) {
         $sql = "SELECT u.id, u.mail, u.password, u.facebook_id, u.pseudo
             FROM users u WHERE u.mail=:mail AND u.password=:password";
@@ -38,6 +55,20 @@ class UserMapper extends Mapper {
         }
         else {
             throw new Exception("could not find record");
+        }
+        return $result;
+    }
+    
+    public function findUserByToken($token) {
+        $sql = "SELECT u.id, u.mail, u.password, u.facebook_id, u.pseudo
+            FROM users u WHERE u.token=:token";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            "token" => $token
+        ]);
+        $result = null;
+        if($row = $stmt->fetch()) {
+            $result = new User($row);
         }
         return $result;
     }
