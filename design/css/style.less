@@ -3,12 +3,67 @@
 @small_shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); 
 @medium_shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
+@success_green: #84e05c;
+@error_red: #d45d5d;
+
 html,body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
     background: @blue_bg_0;
+}
+
+a {
+    color: @success_green;
+}
+
+.green {
+    color: @success_green;
+}
+
+.red {
+    color: @error_red;
+}
+
+.navbar {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    padding: 1em 2em;
+    box-sizing: border-box;
+
+    
+    .site-logo {
+        float: left;
+        color: white;
+        font-weight: 300;
+        font-size: 1.5em;
+        line-height: 50px;
+    }
+    
+    .site-nav {
+        margin-left: 2em;
+        float: left;
+        line-height: 57px;
+        font-weight: 100;
+        
+        a {
+            color: #eee;
+            margin-right: 1em;
+        }
+    }
+    
+    .account {
+        float: right;
+        
+        .profil-picture {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+        }
+    }
 }
 
 video#bgvid { 
@@ -84,7 +139,11 @@ video#bgvid {
                         border-right: 3px solid #ccc;
                         
                         &.correct {
-                            color: #84e05c;
+                            color: @success_green;
+                        }
+                        
+                        &.incorrect {
+                            color: @error_red;
                         }
                     }
                 }
@@ -111,13 +170,25 @@ video#bgvid {
                 cursor: pointer;
                 margin: 1em;
                 font-size: .8em;
-                background: #84e05c;
+                background: @success_green;
                 padding: .5em 1em;
-                border: 1px solid #84e05c;
+                border: 1px solid @success_green;
                 color: white;
                 width: auto;
                 border-radius: 5px;
             }
         }
     }
+}
+
+.footer {
+    font-size: .8em;
+    letter-spacing: 3px;
+    position: fixed;
+    text-transform: uppercase;
+    color: #eee;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: .5em;
 }

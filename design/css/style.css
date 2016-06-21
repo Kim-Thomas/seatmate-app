@@ -7,6 +7,48 @@ body {
   width: 100%;
   background: #44b0f7;
 }
+a {
+  color: #84e05c;
+}
+.green {
+  color: #84e05c;
+}
+.red {
+  color: #d45d5d;
+}
+.navbar {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  padding: 1em 2em;
+  box-sizing: border-box;
+}
+.navbar .site-logo {
+  float: left;
+  color: white;
+  font-weight: 300;
+  font-size: 1.5em;
+  line-height: 50px;
+}
+.navbar .site-nav {
+  margin-left: 2em;
+  float: left;
+  line-height: 57px;
+  font-weight: 100;
+}
+.navbar .site-nav a {
+  color: #eee;
+  margin-right: 1em;
+}
+.navbar .account {
+  float: right;
+}
+.navbar .account .profil-picture {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
 video#bgvid {
   position: fixed;
   top: 50%;
@@ -78,6 +120,9 @@ video#bgvid {
 .fullpage .wrap form .input-group .input-icon i.correct {
   color: #84e05c;
 }
+.fullpage .wrap form .input-group .input-icon i.incorrect {
+  color: #d45d5d;
+}
 .fullpage .wrap form .input-group input {
   display: inline-block;
   width: 100px;
@@ -103,4 +148,15 @@ video#bgvid {
   color: white;
   width: auto;
   border-radius: 5px;
+}
+.footer {
+  font-size: .8em;
+  letter-spacing: 3px;
+  position: fixed;
+  text-transform: uppercase;
+  color: #eee;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: .5em;
 }
