@@ -75,6 +75,9 @@ video#bgvid {
   color: #44b0f7;
   border-right: 3px solid #ccc;
 }
+.fullpage .wrap form .input-group .input-icon i.correct {
+  color: #84e05c;
+}
 .fullpage .wrap form .input-group input {
   display: inline-block;
   width: 100px;
