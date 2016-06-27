@@ -52,11 +52,11 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', function ($rootScope, $sco
 myApp.factory('UserService', ['$http', '$q', '$cookies', function ($http, $q, $cookies) {
     return {
         getProfile: function () {
-            $http.get('http://localhost:808/seatmate-app/api/public/api/secure/signin')
+            $http.get(API_URL + '/v1/secure/signin')
         },
         login: function (mail, password) {
             defered = $q.defer();
-            $http.post('http://localhost:808/seatmate-app/api/public/api/secure/signin', 
+            $http.post(API_URL + '/v1/secure/signin', 
                 {mail: mail, password: password}
             ).success(function (data) { 
                 $cookies.token = data.token;
@@ -68,7 +68,7 @@ myApp.factory('UserService', ['$http', '$q', '$cookies', function ($http, $q, $c
         },
         checkToken: function (token) {
             defered = $q.defer();
-            $http.post('http://localhost:808/seatmate-app/api/public/api/secure/token/check', 
+            $http.post(API_URL + '/v1/secure/token/check', 
                 {token: token}
             ).success(function (user) { 
                 defered.resolve(user);

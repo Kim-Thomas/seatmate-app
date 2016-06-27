@@ -10,7 +10,7 @@
 /**
  * GLOBAL
  */
-var API_URL = 'http://localhost:808';
+var API_URL = 'http://api.seatmate.io';
 
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
