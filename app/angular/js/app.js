@@ -25,8 +25,14 @@ var appServices = angular.module('appServices', []);
 var appControllers = angular.module('appControllers', []);
 var appDirectives = angular.module('appDirectives', []);
 
-myApp.run(['$rootScope', function($rootScope) {
-      
+myApp.run(['$rootScope', '$cookies', 'UserService', function($rootScope, $cookies, UserService) {
+      if (typeof $cookies.token != 'undefined') {
+          UserService.checkToken($cookies.token).then(function (user) {
+              $rootScope.user = user;
+          }, function () {
+              delete $cookies.token;
+          });
+      }
 }]);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -53,7 +59,9 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function(
         })
         .state('logout', {
             url: '/logout',
-            controller: function($scope, $state) {
+            controller: function($rootScope, $scope, $state, $cookies) {
+                delete $cookies.token;
+                delete $rootScope.user;
                 $state.go('index');
             }
         })

@@ -65,6 +65,17 @@ myApp.factory('UserService', ['$http', '$q', '$cookies', function ($http, $q, $c
                 defered.reject();    
             });
             return defered.promise;
+        },
+        checkToken: function (token) {
+            defered = $q.defer();
+            $http.post('http://localhost:808/seatmate-app/api/public/api/secure/token/check', 
+                {token: token}
+            ).success(function (user) { 
+                defered.resolve(user);
+            }).error(function () {
+                defered.reject();    
+            });
+            return defered.promise;
         }
     };
 }]);

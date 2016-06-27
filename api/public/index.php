@@ -74,12 +74,12 @@ $app->get('/routes', function ($request, $response, $args) {
 });
 
 // Add route callbacks
-$app->get('/api', function ($request, $response, $args) {
+$app->get('/v1', function ($request, $response, $args) {
     return $response->withStatus(200)->write('Bienvenue sur l\'api seatmate 0.0.1');
 });
 
 // Add route callbacks
-$app->get('/api/users/{id}', function (Request $request, Response $response) {
+$app->get('/v1/users/{id}', function (Request $request, Response $response) {
     $route = $request->getAttribute('route');
     $mapper = new UserMapper($this->db);
     $user = $mapper->findUserById($route->getArgument('id'));
@@ -88,13 +88,13 @@ $app->get('/api/users/{id}', function (Request $request, Response $response) {
 
 
 // Add route callbacks
-$app->get('/api/users', function (Request $request, Response $response) {
+$app->get('/v1/users', function (Request $request, Response $response) {
     $mapper = new UserMapper($this->db);
     $users = $mapper->getUsers();
     return $response->withStatus(200)->withJson($users);
 })->add($tokenCheck);
 
-$app->post('/api/secure/signin', function (Request $request, Response $response) {
+$app->post('/v1/secure/signin', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
     $user_data = [];
     $user_data['mail'] = $data['mail'];
@@ -114,7 +114,19 @@ $app->post('/api/secure/signin', function (Request $request, Response $response)
     return $response->withStatus(200)->withJson(array('token' => $token, 'user' => $user));
 });
 
-$app->post('/api/secure/signup', function (Request $request, Response $response) {
+$app->post('/v1/secure/token/check', function (Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $mapper = new UserMapper($this->db);
+    $user = $mapper->findUserByToken($data['token']);
+    if (!$user) {
+        return $response->withStatus(401)->write("bad access token");
+    }
+    else {
+        return $response->withStatus(200)->withJson($user);
+    }
+});
+
+$app->post('/v1/secure/signup', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
     $user_data = [];
     $user_data['mail'] = $data['mail'];

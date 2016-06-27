@@ -26,10 +26,11 @@
             <span class="site-logo" ui-sref="index">Seatmate.io</span>
             <span class="site-nav">
                 <a href ui-sref="about">about</a>
-                <a href ng-hide="user" ui-sref="signin">sign in</a>
-                <a href ng-show="user">{{user.pseudo}} ({{user.mail}})</a>
+                <a href ng-if="!user" ui-sref="signin">sign in</a>
+                <a href ng-if="user" ui-sref="logout">logout</a>
             </span>
-            <span class="account">
+            <span ng-if="user" class="account">
+                <span>{{user.pseudo}} ({{user.mail}})</span>
                 <img src="img/example-128.jpg" class="profil-picture">
             </span>
         </section>
