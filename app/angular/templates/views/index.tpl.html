@@ -1,0 +1,12 @@
+<div class="wrap">
+    <form ng-submit="searchFlight(formSearch)">
+        <div ng-show="message">{{message}}</div>
+        <div class="input-group">
+            <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Flight" ng-model="formSearch.nbOfFlight" maxlength="5">
+        </div>
+        <div class="input-group">
+            <span class="input-icon"><i class="ionicons ion-android-pin"></i></span><input type="text" placeholder="Seat" ng-model="formSearch.nbOfSeat" maxlength="4">
+        </div>
+        <button type="submit">Search <img ng-show="loading" src="img/ajax-loader.gif"></button>
+    </form>
+</div>

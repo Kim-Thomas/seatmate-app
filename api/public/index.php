@@ -111,7 +111,7 @@ $app->post('/api/secure/signin', function (Request $request, Response $response)
     $user->setTokenDate(time());
     $mapper->save($user);
     
-    return $response->withStatus(200)->withJson($token);
+    return $response->withStatus(200)->withJson(array('token' => $token, 'user' => $user));
 });
 
 $app->post('/api/secure/signup', function (Request $request, Response $response) {

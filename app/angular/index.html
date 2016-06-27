@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Starter Template</title>
+        <!-- Zaidan Style -->
+        <link href="css/zaidan.css" rel="stylesheet">
+        <!-- Custom Style -->
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/ionicons.min.css" rel="stylesheet">
+        <link href="css/font.css"
+      rel="stylesheet">
+    </head>
+    
+    <body ng-app="myApp" ng-controller="RootCtrl">
+        
+        <video autoplay loop muted id="bgvid">
+            <source src="img/airport.mp4" type="video/mp4">
+        </video>
+        
+        <div class="blue_bg"></div>
+        
+        <section class="navbar">
+            <span class="site-logo" ui-sref="index">Seatmate.io</span>
+            <span class="site-nav">
+                <a href ui-sref="about">about</a>
+                <a href ng-hide="user" ui-sref="signin">sign in</a>
+                <a href ng-show="user">{{user.pseudo}} ({{user.mail}})</a>
+            </span>
+            <span class="account">
+                <img src="img/example-128.jpg" class="profil-picture">
+            </span>
+        </section>
+        
+        <section class="fullpage" ui-view>
+        </section>
+        
+        <section class="footer">
+            Made with <i class="ionicons ion-ios-heart red"></i> by <a href="">JB&TK Studio</a>
+        </section>
+        
+        <script type="text/javascript" src="js/libs/jquery-2.2.4.js"></script>
+        <script type="text/javascript" src="js/libs/seatmate-front.js"></script>
+        <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+        <script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+        <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript" src="js/controllers.js"></script>
+        
+    </body>
+</html>
