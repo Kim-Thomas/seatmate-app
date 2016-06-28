@@ -160,3 +160,7 @@ video#bgvid {
   text-align: center;
   padding: .5em;
 }
+
+.account .online {
+  color: green !important;
+}

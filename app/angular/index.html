@@ -26,11 +26,11 @@
             <span class="site-logo" ui-sref="index">Seatmate.io</span>
             <span class="site-nav">
                 <a href ui-sref="about">about</a>
-                <a href ng-if="!user" ui-sref="signin">sign in</a>
-                <a href ng-if="user" ui-sref="logout">logout</a>
+                <a href ng-if="!auth.isLogged" ui-sref="signin">sign in</a>
+                <a href ng-if="auth.isLogged" ui-sref="logout">logout</a>
             </span>
-            <span ng-if="user" class="account">
-                <span>{{user.pseudo}} ({{user.mail}})</span>
+            <span ng-if="auth.isLogged" class="account">
+                <span ng-class="{'online':auth.isOnline}">{{user.pseudo}} ({{user.mail}})</span>
                 <img src="img/example-128.jpg" class="profil-picture">
             </span>
         </section>
@@ -43,7 +43,7 @@
         </section>
         
         <script type="text/javascript" src="js/libs/jquery-2.2.4.js"></script>
-        <script src="http://server.seatmate.io/socket.io/socket.io.js"></script>
+        <script src="http://localhost:1337/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="js/libs/seatmate-front.js"></script>
         <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
         <script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.min.js"></script>
