@@ -12,6 +12,8 @@
  */
 var API_URL = 'http://api.seatmate.io';
 
+var socket = io.connect('http://localhost:1337');            
+
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
     'ngCookies',
@@ -21,6 +23,10 @@ var myApp = angular.module('myApp', [
     'appServices'
 ]);
 
+socket.on('newMate', function (user) {
+    console.log(user);
+});
+
 var appServices = angular.module('appServices', []);
 var appControllers = angular.module('appControllers', []);
 var appDirectives = angular.module('appDirectives', []);
@@ -28,6 +34,7 @@ var appDirectives = angular.module('appDirectives', []);
 myApp.run(['$rootScope', '$cookies', 'UserService', function($rootScope, $cookies, UserService) {
       if (typeof $cookies.token != 'undefined') {
           UserService.checkToken($cookies.token).then(function (user) {
+              socket.emit('login', user);
               $rootScope.user = user;
           }, function () {
               delete $cookies.token;

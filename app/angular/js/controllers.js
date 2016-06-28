@@ -12,6 +12,9 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', function ($rootScope, $sco
     $scope.searchFlight = function (form) {
         $scope.loading = true;
         
+        // Envoi de l'info de la recherche
+        socket.emit('searchFlight', form);
+        
         /**
          * Appel au service / API / Simulation $timeout
          */
@@ -33,9 +36,10 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', function ($rootScope, $sco
     
     $scope.doLogin = function (form) {
         $scope.loading = true;
-      
-        UserService.login(form.mail, form.password).then(function (data) {
-            $rootScope.user = data; 
+        
+        UserService.login(form.mail, form.password).then(function (user) {
+            $rootScope.user = user; 
+            socket.emit('login', user);
             $scope.message = 'Connexion avec succès, redirection dans 3s...';
             $scope.isLogged = true;
             $timeout(function () {
