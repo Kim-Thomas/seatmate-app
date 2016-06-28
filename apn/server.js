@@ -1,5 +1,13 @@
 var http = require('http');
 var fs = require('fs');
+var Sequelize = require('sequelize');
+
+var sequelize = new Sequelize('seatmate', 'seatmate', 'nGhTHF7SNCXR8qL9');
+
+var User = sequelize.define('user', {
+    mail: Sequelize.STRING,
+    pseudo: Sequelize.STRING
+});
 
 var users = [];
 
@@ -21,6 +29,16 @@ io.sockets.on('connection', function (socket) {
     
     console.log('Un client est connecté !');
     socket.emit('message', 'Vous êtes bien connecté !');
+    
+    /**
+     * Request SQL
+     * TEST
+     */
+    User.findAll({ attributes: ['id', 'mail', 'pseudo']}).then(function(users) {
+        for (var i=0; i<users.length; i++) {
+            console.log(users[i].dataValues);
+        }
+    });
 
     // Quand le serveur reçoit un signal de type "message" du client    
     socket.on('message', function (message) {
@@ -28,6 +46,7 @@ io.sockets.on('connection', function (socket) {
     });	
     
     socket.on('searchFlight', function (flight) {
+        
         var isFind = false;
         for (var i=0; i<currentUser.flights.length; i++) {
             if (currentUser.flights[i].nbOfFlight == flight.nbOfFlight) {
