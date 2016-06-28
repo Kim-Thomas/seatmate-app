@@ -12,7 +12,7 @@
  */
 var API_URL = 'http://api.seatmate.io';
 
-var socket = io.connect('http://localhost:1337');            
+var socket = io.connect('http://server.seatmate.io');            
 
 // Declare app level module which depends on filters, and services
 var myApp = angular.module('myApp', [
