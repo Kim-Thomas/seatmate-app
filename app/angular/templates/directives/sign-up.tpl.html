@@ -1,0 +1,11 @@
+
+<div ng-show="message">{{message}}</div>
+<form ng-submit="doRegister(formRegister)">
+    <div class="input-group">
+        <span class="input-icon"><i class="ionicons ion-email"></i></span><input type="text" placeholder="Mail" ng-model="formRegister.mail">
+    </div>
+    <div class="input-group">
+        <span class="input-icon"><i class="ionicons ion-android-person"></i></span><input type="text" placeholder="Pseudo" ng-model="formRegister.pseudo">
+    </div>
+    <button type="submit">Register <img ng-show="loading" src="img/ajax-loader.gif"></button>
+</form>

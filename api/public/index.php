@@ -98,6 +98,15 @@ $app->get('/v1/users', function (Request $request, Response $response) {
     return $response->withStatus(200)->withJson($users);
 })->add($tokenCheck);
 
+
+// Add route callbacks
+$app->get('/v1/messages/{user_id}', function (Request $request, Response $response) {
+    $route = $request->getAttribute('route');
+    $mapper = new MessageMapper($this->db);
+    $messages = $mapper->findMessagesByUserId($this->user->getId(), $route->getArgument('user_id'));
+    return $response->withStatus(200)->withJson($messages);
+})->add($tokenCheck);
+
 $app->post('/v1/secure/signin', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
     $user_data = [];
@@ -134,13 +143,22 @@ $app->post('/v1/secure/signup', function (Request $request, Response $response) 
     $data = $request->getParsedBody();
     $user_data = [];
     $user_data['mail'] = $data['mail'];
-    $user_data['password'] = sha1($data['password']);
+    $user_data['password'] = sha1('azerty');
     $user_data['pseudo'] = $data['pseudo'];
     $user_data['facebook_id'] = $data['facebook_id'];
     $user = new User($user_data);
     $mapper = new UserMapper($this->db);
-    $mapper->createUser($user);
-    return $response->withStatus(200)->withJson($user);
+    $user = $mapper->createUser($user);
+    
+    // Generate token
+    $token = hash('sha256', $config['token']['secret'].$user->getMail().$user->getPassword().time().rand());
+    
+    // Save token
+    $user->setToken($token);
+    $user->setTokenDate(time());
+    $mapper->save($user);
+    
+    return $response->withStatus(200)->withJson(array('token' => $token, 'user' => $user));
 });
 
 // Run application

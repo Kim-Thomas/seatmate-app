@@ -87,6 +87,8 @@ class UserMapper extends Mapper {
         if(!$result) {
             throw new Exception("could not save record");
         }
+        $user->setId($this->db->lastInsertId());
+        return $user;
     }
     
     public function save(User $user) {

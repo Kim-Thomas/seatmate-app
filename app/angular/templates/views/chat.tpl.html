@@ -1,0 +1,12 @@
+<div class="wrap">
+    <h2>{{userDest.pseudo}}</h2>
+
+    <div ng-repeat="message in messages">
+        From <b>{{message.user_id_s}}</b> to <b>{{message.user_id_d}}</b> {{message.content}}
+    </div>
+
+    <form ng-submit="sendMessage(formChat)">
+        <input type="text" placeholder="Entrer votre message" ng-model="formChat.content"/>
+        <button type="submit">Envoyer</button>
+    </form>
+</div>

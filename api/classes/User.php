@@ -38,6 +38,10 @@ class User implements JsonSerializable {
         return $this->id;
     }
     
+    public function setId($id) {
+        $this->id = $id;
+    }
+    
     public function getMail() {
         return $this->mail;
     }

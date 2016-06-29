@@ -1,15 +1,53 @@
 <div class="wrap">
-    <form ng-submit="searchFlight(formSearch)">
-        <div ng-show="message">{{message}}</div>
-        <div class="input-group">
-            <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Flight" ng-model="formSearch.nbOfFlight" maxlength="5">
-        </div>
-        <div class="input-group">
-            <span class="input-icon"><i class="ionicons ion-android-pin"></i></span><input type="text" placeholder="Seat" ng-model="formSearch.nbOfSeat" maxlength="4">
-        </div>
-        <div class="input-group">
-            <span class="input-icon"><i class="ionicons ion-android-calendar"></i></span><input type="text" placeholder="XX/XX" ng-model="formSearch.date" maxlength="5">
-        </div>
-        <button type="submit">Search <img ng-show="loading" src="img/ajax-loader.gif"></button>
-    </form>
+    <div ng-show="step==1">
+        <form ng-submit="searchFlight(formSearch)" novalidate>
+            <div ng-show="message">{{message}}</div>
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Flight" ng-model="formSearch.nbOfFlight" maxlength="5" required>
+            </div>
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-android-pin"></i></span><input type="text" placeholder="Seat" ng-model="formSearch.nbOfSeat" maxlength="4" required>
+            </div>
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-android-calendar"></i></span><input type="text" placeholder="XX/XX" ng-model="formSearch.date" maxlength="5" required>
+            </div>
+            <button type="submit">Search <img ng-show="loading" src="img/ajax-loader.gif"></button>
+        </form>
+    </div>
+    
+    <div ng-show="step==2">
+        <table>
+            <tr>
+                <td>Flight</td>
+                <td>{{formSearch.nbOfFlight}}</td>
+            </tr>
+            <tr>
+                <td>Seat</td>
+                <td>{{formSearch.nbOfSeat}}</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>{{formSearch.date}}</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><button ng-click="validInfo()">Je valide ces infos</button></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div ng-show="step==3">
+        J'ai déjà un compte ? <button ng-click="hasAccount(1)">Oui</button><button ng-click="hasAccount(0)">Non</button>
+    </div>
+    
+    <div ng-show="step==4">
+        <sign-in ng-if="account"></sign-in>
+        <sign-up ng-if="!account"></sign-up>
+        <button ng-click="step=step-1">Précédent</button>
+    </div>
+    
+    <div ng-show="step==5">
+        <button>Enregistrement de ce vol pour voir mes futurs copains :)</button>
+    </div>
 </div>

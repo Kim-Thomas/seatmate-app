@@ -1,0 +1,11 @@
+
+<div ng-show="message">{{message}}</div>
+<form ng-submit="doLogin(formConnexion)">
+    <div class="input-group">
+        <span class="input-icon"><i class="ionicons ion-email"></i></span><input type="text" placeholder="Mail" ng-model="formConnexion.mail">
+    </div>
+    <div class="input-group">
+        <span class="input-icon"><i class="ionicons ion-key"></i></span><input type="password" placeholder="Password" ng-model="formConnexion.password">
+    </div>
+    <button type="submit">Connexion <img ng-show="loading" src="img/ajax-loader.gif"></button>
+</form>

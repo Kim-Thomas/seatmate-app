@@ -38,6 +38,7 @@ myApp.run(['$rootScope', '$cookies', 'UserService', 'AuthService', '$compile', f
           UserService.checkToken($cookies.token).then(function (user) {
               socket.emit('login', $cookies.token);
               $rootScope.user = user;
+              $rootScope.$broadcast('USER_LOGGED');
           }, function () {
               delete $cookies.token;
           });
@@ -45,17 +46,12 @@ myApp.run(['$rootScope', '$cookies', 'UserService', 'AuthService', '$compile', f
 }]);
 
 myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
-    //$httpProvider.interceptors.push('TokenInterceptor');
+    $httpProvider.interceptors.push('TokenInterceptor');
     $stateProvider
         .state('index', {
             url: '/',
             templateUrl: 'templates/views/index.tpl.html',
             controller: 'IndexCtrl'
-        })
-        .state('signin', {
-            url: '/sign-in',
-            templateUrl: 'templates/views/sign-in.tpl.html',
-            controller: 'SignInCtrl'
         })
         .state('about', {
             url: '/about',
@@ -65,11 +61,11 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function(
             url: '/sign-up',
             templateUrl: 'templates/views/sign-up.tpl.html',
             controller: 'SignUpCtrl'
-        })
-        .state('step1', {
-            url: '/step/1',
-            templateUrl: 'templates/views/step1.tpl.html',
-            controller: 'Step1Ctrl'
+        }) 
+        .state('chat', {
+            url: '/chat/:id',
+            templateUrl: 'templates/views/chat.tpl.html',
+            controller: 'ChatCtrl'
         })
         .state('logout', {
             url: '/logout',
@@ -77,7 +73,6 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function(
                 delete $cookies.token;
                 delete $rootScope.user;
                 $rootScope.auth.isLogged = false;
-                socket.emit('disconnect');
                 $state.go('index');
             }
         })

@@ -9,6 +9,15 @@ var User = sequelize.define('user', {
     pseudo: Sequelize.STRING
 });
 
+var Message = sequelize.define('message', {
+    content: Sequelize.STRING,
+    date_created: Sequelize.DATE,
+    user_id_s: Sequelize.INTEGER,
+    user_id_d: Sequelize.INTEGER
+}, {
+    timestamps: false
+});
+
 var users = [];
 
 // Chargement du fichier index.html affiché au client
@@ -44,7 +53,18 @@ io.sockets.on('connection', function (socket) {
     // Quand le serveur reçoit un signal de type "message" du client    
     socket.on('message', function (message) {
         if (currentUser == null) { socket.emit('logout'); console.log('error: log necessary'); return; }
-        console.log('Un client me parle ! Il me dit : ' + message);
+        console.log('Un client me parle ! Il me dit : ');
+        Message.create({content: message.content, user_id_d: message.user_id_d, user_id_s: message.user_id_s}).then(function (message_created) {
+            console.log(message_created.dataValues);
+            socket.emit('message', message_created.dataValues);
+            for (var i=0; i<users.length; i++) {
+                if (users[i].id == message.user_id_d) {
+                    console.log("Trouvé!");
+                    users[i].socket.emit('message', message_created.dataValues);
+                    break;
+                }
+            }
+        });
     });	
     
     socket.on('searchFlight', function (flight) {
@@ -73,8 +93,8 @@ io.sockets.on('connection', function (socket) {
         User.findOne({ attributes: ['id', 'mail', 'pseudo'], where: {'token': token}}).then(function(user) {
             currentUser = user.dataValues;
             currentUser.flights = [];
-            console.log(currentUser);
-            users.push(user);
+            currentUser.socket = socket;
+            users.push(currentUser);
             socket.emit('loginSuccess');
         }, function(err) {
             console.log(err);
