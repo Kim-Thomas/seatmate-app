@@ -16,5 +16,6 @@ abstract class Mapper {
     
     public function __construct($db) {
         $this->db = $db;
+        $this->db->exec("SET CHARACTER SET utf8");
     }
 }

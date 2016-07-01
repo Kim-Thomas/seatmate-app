@@ -13,11 +13,11 @@
 var online = false;  
 if (online) {
     var API_URL = 'http://api.seatmate.io';
-    var socket = io.connect('http://server.seatmate.io');
+    if (typeof io != 'undefined') var socket = io.connect('http://server.seatmate.io');
 }    
 else {
     var API_URL = 'http://localhost:808/seatmate-app/api/public';
-    var socket = io.connect('http://localhost:1337');
+    if (typeof io != 'undefined') var socket = io.connect('http://localhost:1337');
 }      
 
 // Declare app level module which depends on filters, and services
@@ -36,7 +36,6 @@ var appDirectives = angular.module('appDirectives', []);
 myApp.run(['$rootScope', '$cookies', 'UserService', 'AuthService', '$compile', function($rootScope, $cookies, UserService, AuthService, $compile) {
     if (typeof $cookies.token != 'undefined') {
           UserService.checkToken($cookies.token).then(function (user) {
-              socket.emit('login', $cookies.token);
               $rootScope.user = user;
               $rootScope.$broadcast('USER_LOGGED');
           }, function () {
@@ -82,3 +81,9 @@ myApp.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function(
         });
     $urlRouterProvider.otherwise('/error');
 }]);
+
+myApp.filter('html', function($sce){
+    return function(text){
+        return $sce.trustAsHtml(text);
+    };
+});

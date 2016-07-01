@@ -24,7 +24,7 @@ class Message implements JsonSerializable {
         if (isset($data['id'])) {
             $this->id = $data['id'];
         }
-        $this->content = $data['content'];
+        $this->content = htmlspecialchars($data['content']);
         $this->dateCreated = $data['date_created'];
         $this->userIdS = $data['user_id_s'];
         $this->userIdD = $data['user_id_d'];

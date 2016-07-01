@@ -1,21 +1,105 @@
+
+<!-- Faire une map pour afficher les différentes escales - OPENSTREET MAP à utiliser ou voir google map, à check - Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script> -->
+
+
 <div class="wrap">
     <div ng-show="step==1">
-        <form ng-submit="searchFlight(formSearch)" novalidate>
-            <div ng-show="message">{{message}}</div>
+        <h1>Indiquez la date de votre voyage</h1>
+        <form ng-submit="nextStep()">
             <div class="input-group">
-                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Flight" ng-model="formSearch.nbOfFlight" maxlength="5" required>
+                <span class="input-icon"><i class="ionicons ion-android-calendar"></i></span><input type="text" placeholder="XX/XX/XX" ng-model="formSearch.date" maxlength="8">
             </div>
-            <div class="input-group">
-                <span class="input-icon"><i class="ionicons ion-android-pin"></i></span><input type="text" placeholder="Seat" ng-model="formSearch.nbOfSeat" maxlength="4" required>
-            </div>
-            <div class="input-group">
-                <span class="input-icon"><i class="ionicons ion-android-calendar"></i></span><input type="text" placeholder="XX/XX" ng-model="formSearch.date" maxlength="5" required>
-            </div>
-            <button type="submit">Search <img ng-show="loading" src="img/ajax-loader.gif"></button>
+            <button type="submit">Next <img ng-show="loading" src="img/ajax-loader.gif"></button>
         </form>
     </div>
     
     <div ng-show="step==2">
+        <h1>Indiquez l'escale</h1>
+        <form ng-submit="nextStep()">
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Escale" ng-model="escales[indexEscale]"><button type="button" ng-click="indexEscale=indexEscale+1">+</button>
+            </div>
+            <button type="submit">Next <img ng-show="loading" src="img/ajax-loader.gif"></button>
+        </form>
+    </div>
+    
+    <div ng-show="step==3">
+        <h1>Résumé</h1>
+        <form ng-submit="nextStep()">
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-android-calendar"></i></span><input type="text" placeholder="XX/XX/XX" ng-model="formSearch.date" maxlength="8" disabled>
+            </div>
+            <div class="input-group" ng-repeat="escale in escales">
+                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Escale" ng-model="escale" disabled>
+            </div>
+            <button type="submit">Valider <img ng-show="loading" src="img/ajax-loader.gif"></button>
+        </form>
+    </div>
+    
+    <div ng-if="step==4" ng-init="checkIsLogged()">
+        <h1>J'ai déjà un compte?</h1>
+        <table ng-show="hasAccount==0">
+            <tr>
+                <td>
+                    <form ng-submit="hasAccount=1">
+                        <button type="submit">Oui <img ng-show="loading" src="img/ajax-loader.gif"></button>
+                    </form>
+                </td>
+                <td>
+                    <form ng-submit="hasAccount=2">
+                        <button type="submit">Non <img ng-show="loading" src="img/ajax-loader.gif"></button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <sign-in ng-if="hasAccount==1"></sign-in>
+        <sign-up ng-if="hasAccount==2"></sign-up>
+    </div>
+    
+    <div ng-show="step==5">
+        <h1>Voulez-vous compléter votre profil?</h1>
+        <table ng-show="hasAccount==0">
+            <tr>
+                <td>
+                    <form ng-submit="">
+                        <button type="submit">Oui <img ng-show="loading" src="img/ajax-loader.gif"></button>
+                    </form>
+                </td>
+                <td>
+                    <form ng-submit="nextStep()">
+                        <button type="submit">Non <img ng-show="loading" src="img/ajax-loader.gif"></button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div ng-if="step>5" ng-init="registerTrip()">
+        <h1>Votre voyage est enregistré !</h1>
+        <form ng-submit="">
+            <button type="submit">Afficher les copains dispo pour votre voyage</button>
+        </form>
+    </div>
+    
+    
+    <!--
+    <div ng-show="step==2">
+        <form ng-submit="searchFlight(formSearch)">
+            <div class="input-group">
+                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Escale" ng-model="escales[indexEscale]" maxlength="5">
+            </div>
+        </form>
+    </div>
+    
+    <div ng-show="step==3">
+        <button type="submit">Autre escale?</button>
+        <form ng-if="" ng-submit="updateEscale()">
+               <button type="submit">Autre escale?</button>
+        </form>
+    </div>
+    
+    <div ng-show="step==22">
         <table>
             <tr>
                 <td>Flight</td>
@@ -37,17 +121,17 @@
         </table>
     </div>
     
-    <div ng-show="step==3">
+    <div ng-show="step==23">
         J'ai déjà un compte ? <button ng-click="hasAccount(1)">Oui</button><button ng-click="hasAccount(0)">Non</button>
     </div>
     
-    <div ng-show="step==4">
+    <div ng-show="step==24">
         <sign-in ng-if="account"></sign-in>
         <sign-up ng-if="!account"></sign-up>
         <button ng-click="step=step-1">Précédent</button>
     </div>
     
-    <div ng-show="step==5">
+    <div ng-show="step==25">
         <button>Enregistrement de ce vol pour voir mes futurs copains :)</button>
-    </div>
+    </div>-->
 </div>

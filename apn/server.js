@@ -10,7 +10,7 @@ var User = sequelize.define('user', {
 });
 
 var Message = sequelize.define('message', {
-    content: Sequelize.STRING,
+    content: Sequelize.TEXT,
     date_created: Sequelize.DATE,
     user_id_s: Sequelize.INTEGER,
     user_id_d: Sequelize.INTEGER
@@ -27,6 +27,26 @@ var server = http.createServer(function(req, res) {
         res.end(content);
     });
 });
+
+
+function htmlEscape(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// I needed the opposite function today, so adding here too:
+function htmlUnescape(value){
+    return String(value)
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+}
 
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
@@ -53,19 +73,31 @@ io.sockets.on('connection', function (socket) {
     // Quand le serveur reçoit un signal de type "message" du client    
     socket.on('message', function (message) {
         if (currentUser == null) { socket.emit('logout'); console.log('error: log necessary'); return; }
-        console.log('Un client me parle ! Il me dit : ');
         Message.create({content: message.content, user_id_d: message.user_id_d, user_id_s: message.user_id_s}).then(function (message_created) {
-            console.log(message_created.dataValues);
+            message_created.dataValues.content = htmlEscape(message_created.dataValues.content);
             socket.emit('message', message_created.dataValues);
             for (var i=0; i<users.length; i++) {
                 if (users[i].id == message.user_id_d) {
                     console.log("Trouvé!");
                     users[i].socket.emit('message', message_created.dataValues);
+                    users[i].socket.emit('tape', 0);
+                    console.log('envoyé!' + users[i].id);
                     break;
                 }
             }
         });
     });	
+    
+    socket.on('tape', function (data) {
+        for (var i=0; i<users.length; i++) {
+            if (users[i].id == data.user_id_d) {
+                console.log("Trouvé!");
+                users[i].socket.emit('tape', data.tape);
+                console.log('envoyé!' + users[i].id);
+                break;
+            }
+        }
+    });
     
     socket.on('searchFlight', function (flight) {
         if (currentUser == null) { socket.emit('logout'); console.log('error: log necessary'); return; }

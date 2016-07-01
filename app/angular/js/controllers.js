@@ -10,82 +10,40 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', '$cookies', 'AuthService',
     $rootScope.hideLogin = function () {
         $rootScope.login = false;  
     };
-    
-    socket.on('loginSuccess', function () {
-        console.log('chat_online'); 
-        $rootScope.$apply(function() {
-            $rootScope.auth.isOnline = true;
-        });
-    });
-    
-    socket.on('logout', function () {
-        console.log('chat_offline');
-        if (typeof $cookies.token != 'undefined') {
-            socket.emit('login', $cookies.token); 
-        }
-    });
-    
-    socket.on('disconnect', function () {
-        console.log('chat_disconnect'); 
-        $rootScope.$apply(function() {
-            $rootScope.auth.isOnline = false; 
-        });
-    });
 }])
 
 .controller('IndexCtrl', ['$scope', '$timeout', '$rootScope', '$state', '$cookies', function ($scope, $timeout, $rootScope, $state, $cookies) {
-    $scope.formSearch = {
-        nbOfFlight: '',
-        nbOfSeat: '',
+    $scope.formTrip = {
+        escales: ['Paris'],
+        countHours: '',
         date: ''
     };
     
+    $scope.indexEscale = 0;
     $scope.step = 1;
     
-    $scope.searchFlight = function (form) {
-        // Init message
-        $scope.message = '';
-        
-        if (form.nbOfFlight.length>1
-        && form.nbOfSeat.length>1
-        && form.date.length==5) {
-        
-            $scope.loading = true;
-            
-            // Envoi de l'info de la recherche
-            socket.emit('searchFlight', form);
-            
-            $timeout(function () {
-                $scope.loading = false;
-                $rootScope.formSearch = form;
-                $cookies.nbOfFlight = form.nbOfFlight;
-                $cookies.nbOfSeat = form.nbOfSeat;
-                $cookies.date = form.date;
-                $scope.step++;
-            }, 700);
-        } 
-        else {
-            $scope.message = "Remplissez correctement le formulaire";
-        }
+    $scope.nextStep = function () {
+        $scope.step++; 
     };
     
-    $scope.validInfo = function () {
+    $scope.hasAccount = 0;
+    
+    $scope.checkIsLogged = function () {
         if ($rootScope.auth.isLogged) {
-            $scope.step = 5;
-        }
+            $scope.step++;
+        }  
         else {
-            $scope.step = 3;
+            $scope.$on('USER_LOGGED', function () {
+                $scope.step++;
+            });
         }
     };
     
-    $scope.hasAccount = function (account) {
-        $scope.account = account;
-        $scope.step++;
-        
-        $scope.$on('USER_LOGGED', function () {
-            $scope.step++;
-        });
-    };
+    $scope.registerTrip = function () {
+        console.log("Enregistrement du trip!");
+        console.log($scope.formTrip);
+    }
+    
 }])
 .controller('ChatCtrl', ['$scope', '$rootScope', '$stateParams', '$state', 'ChatService', 'UserService', function ($scope, $rootScope, $stateParams, $state, ChatService, UserService) {
     
@@ -103,6 +61,7 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', '$cookies', 'AuthService',
         UserService.getProfile($stateParams.id).then(function (user) {
             
             $scope.userDest = user;
+            $scope.isTape = 0;
             
             ChatService.getMessages($stateParams.id).then(function (messages) {
                 
@@ -137,6 +96,19 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', '$cookies', 'AuthService',
                         $scope.messages.push(message);
                     });
                 }
+            });
+            
+            $scope.$watch('formChat.content', function (oldValue, newValue) {
+                if (newValue.length>0) {
+                    socket.emit('tape', {user_id_d: $scope.formChat.user_id_d, tape: 1});
+                } else socket.emit('tape', {user_id_d: $scope.formChat.user_id_d, tape: 0});
+            });
+            
+            socket.on('tape', function (isTape) {
+                $scope.$apply(function () {
+                    $scope.isTape = isTape;
+                });
+                console.log(isTape);
             });
             
             $scope.initForm();
@@ -174,6 +146,43 @@ myApp.factory('AuthService', [function () {
             });
             return defered.promise;
         }    
+    };
+}])
+.factory('IOService', ['$http', '$q', function ($http, $q) {
+    return {
+        default: function () {
+            
+            /**
+             * SOCKET IO
+             */
+            
+            socket.emit('login', $cookies.token);
+            
+            // Envoi de l'info de la recherche
+            socket.emit('searchFlight', form);
+            
+            socket.on('loginSuccess', function () {
+                console.log('chat_online'); 
+                $rootScope.$apply(function() {
+                    $rootScope.auth.isOnline = true;
+                });
+            });
+            
+            socket.on('logout', function () {
+                console.log('chat_offline');
+                if (typeof $cookies.token != 'undefined') {
+                    socket.emit('login', $cookies.token); 
+                }
+            });
+            
+            socket.on('disconnect', function () {
+                console.log('chat_disconnect'); 
+                $rootScope.$apply(function() {
+                    $rootScope.auth.isOnline = false; 
+                });
+            });
+        },
+         
     };
 }])
 .factory('UserService', ['$http', '$q', '$cookies', 'AuthService', function ($http, $q, $cookies, AuthService) {
@@ -288,7 +297,6 @@ myApp.factory('AuthService', [function () {
                 
                 // doLogin
                 AuthService.isLogged = true;
-                socket.emit('login', $cookies.token);
                 
                 // Hide login
                 $rootScope.login = false;
@@ -328,7 +336,6 @@ myApp.factory('AuthService', [function () {
                 
                 // doLogin
                 AuthService.isLogged = true;
-                socket.emit('login', $cookies.token);
                 
                 $rootScope.$broadcast('USER_LOGGED');
             }, function () {
