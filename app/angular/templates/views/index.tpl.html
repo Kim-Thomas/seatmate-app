@@ -18,7 +18,11 @@
         <h1>Indiquez l'escale</h1>
         <form ng-submit="nextStep()">
             <div class="input-group">
-                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input type="text" placeholder="Escale" ng-model="escales[indexEscale]"><button type="button" ng-click="indexEscale=indexEscale+1">+</button>
+                <span class="input-icon"><i class="ionicons ion-plane"></i></span><input ng-change="loadAirports()" type="text" placeholder="Escale" ng-model="escales[indexEscale]">
+                <button type="button" ng-click="addEscale()">+</button>
+            </div>
+            <div ng-repeat="airport in airports" ng-click="escales[indexEscale]=airport.code_airtport_IATA">
+                {{airport.country}}/{{airport.city}} - {{airport.name}} ({{airport.code_airtport_IATA}})
             </div>
             <button type="submit">Next <img ng-show="loading" src="img/ajax-loader.gif"></button>
         </form>

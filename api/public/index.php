@@ -98,6 +98,21 @@ $app->get('/v1/users', function (Request $request, Response $response) {
     return $response->withStatus(200)->withJson($users);
 })->add($tokenCheck);
 
+// Add route callbacks
+$app->get('/v1/airports', function (Request $request, Response $response) {
+    $mapper = new AirportMapper($this->db);
+    $airports = $mapper->getAirports();
+    return $response->withStatus(200)->withJson($airports);
+});
+
+// Add route callbacks
+$app->get('/v1/airports/search/{word}', function (Request $request, Response $response) {
+    $route = $request->getAttribute('route');
+    $mapper = new AirportMapper($this->db);
+    $airports = $mapper->searchAirports($route->getArgument('word'));
+    return $response->withStatus(200)->withJson($airports);
+});
+
 
 // Add route callbacks
 $app->get('/v1/messages/{user_id}', function (Request $request, Response $response) {

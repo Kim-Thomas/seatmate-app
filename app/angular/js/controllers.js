@@ -12,18 +12,38 @@ myApp.controller('RootCtrl', ['$rootScope', '$scope', '$cookies', 'AuthService',
     };
 }])
 
-.controller('IndexCtrl', ['$scope', '$timeout', '$rootScope', '$state', '$cookies', function ($scope, $timeout, $rootScope, $state, $cookies) {
+.controller('IndexCtrl', ['$scope', '$timeout', '$rootScope', '$state', '$cookies', 'AirportService', function ($scope, $timeout, $rootScope, $state, $cookies, AirportService) {
     $scope.formTrip = {
         escales: ['Paris'],
         countHours: '',
         date: ''
     };
     
+    $scope.airports = [];
+    
     $scope.indexEscale = 0;
     $scope.step = 1;
     
+    $scope.addEscale = function () {
+        $scope.indexEscale++;
+        $scope.airports = [];
+    };
+
     $scope.nextStep = function () {
         $scope.step++; 
+    };
+    
+    $scope.loadAirports = function () {
+        if ($scope.escales[$scope.indexEscale].length>2) {
+            AirportService.searchAirports($scope.escales[$scope.indexEscale]).then(function (data) {
+                $scope.airports = data;
+            }, function () {
+                $scope.airports = [];
+            });  
+        }
+        else {
+            $scope.airports = [];
+        }
     };
     
     $scope.hasAccount = 0;
@@ -141,6 +161,20 @@ myApp.factory('AuthService', [function () {
             $http.get(API_URL + '/v1/messages/' + user_id)
             .success(function (messages) {
                 defered.resolve(messages);
+            }).error(function (err) {
+                defered.reject(err);
+            });
+            return defered.promise;
+        }    
+    };
+}])
+.factory('AirportService', ['$http', '$q', function ($http, $q) {
+    return {
+        searchAirports: function (search) {
+            var defered = $q.defer();
+            $http.get(API_URL + '/v1/airports/search/' + search)
+            .success(function (airports) {
+                defered.resolve(airports);
             }).error(function (err) {
                 defered.reject(err);
             });
